@@ -114,11 +114,12 @@ load_state() {
 # 获取当前IP
 get_current_ip() {
     local domain
-    domain=$(grep "TARGET_DOMAINS" "${CFST_DIR}/auto_update_hosts.sh" 2>/dev/null | \
-             grep -o '"[^"]*"' | head -1 | tr -d '"')
+    # 从auto_update_hosts.sh中提取第一个配置的域名
+    domain=$(grep -A3 "TARGET_DOMAINS=" "${CFST_DIR}/auto_update_hosts.sh" 2>/dev/null | \
+             grep '"' | head -1 | sed 's/.*"\([^"]*\)".*/\1/' | tr -d ' ')
     
-    if [[ -z "$domain" ]] || [[ "$domain" == "your-domain.com" ]]; then
-        log "错误: 域名未配置或仍为示例值"
+    if [[ -z "$domain" ]] || [[ "$domain" == "your-domain.com" ]] || [[ "$domain" == "example.com" ]]; then
+        log "错误: 域名未配置或仍为示例值 (domain='${domain}')"
         return 1
     fi
     
@@ -127,7 +128,7 @@ get_current_ip() {
          awk '{print $1}' | head -1)
     
     if [[ -z "$ip" ]]; then
-        log "错误: 在hosts文件中未找到域名 ${domain} 的IP"
+        log "错误: 在hosts文件中未找到域名 '${domain}' 的IP"
         return 1
     fi
     
