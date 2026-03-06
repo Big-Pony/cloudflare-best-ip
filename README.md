@@ -46,9 +46,7 @@ wget https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/Cloudf
 tar -zxf CloudflareST_linux_amd64.tar.gz
 ```
 
-### 2. 配置文件
-
-#### 2.1 修改域名
+### 2. 配置域名
 
 编辑 `auto_update_hosts.sh`，修改 `TARGET_DOMAINS`：
 
@@ -60,26 +58,7 @@ TARGET_DOMAINS=(
 )
 ```
 
-#### 2.2 修改路径（macOS 定时任务）
-
-编辑 `com.user.cfst.update.plist`，将 `/path/to/cfst` 替换为你的实际路径：
-
-```xml
-<!-- 修改为你的实际路径 -->
-<string>/Users/yourname/tools/cfst/auto_update_hosts.sh</string>
-
-<!-- 修改为你的实际目录 -->
-<string>/Users/yourname/tools/cfst</string>
-
-<!-- 日志路径 -->
-<string>/Users/yourname/tools/cfst/update.log</string>
-```
-
-### 3. 选择运行模式
-
-#### 模式A：智能监控（推荐）
-
-智能判断是否需要更新，IP稳定时不折腾，IP恶化时秒级响应。
+### 3. 启动智能监控
 
 ```bash
 # 启动监控（后台运行，每3分钟检测一次）
@@ -98,17 +77,10 @@ tail -f smart_monitor.log
 ./smart_monitor.sh stop
 ```
 
-#### 模式B：定时执行（传统方式）
+#### 其他方式
 
-固定时间间隔执行测速更新。
-
-```bash
-# 手动执行
-sudo ./auto_update_hosts.sh
-
-# 或安装定时任务（每6小时）
-./install.sh
-```
+- **手动执行**：`sudo ./auto_update_hosts.sh`
+- **定时任务**（传统cron/launchd）：参考 `com.user.cfst.update.plist` 或 `install.sh`
 
 ### 4. 安装定时任务（macOS）
 
@@ -127,16 +99,6 @@ launchctl load ~/Library/LaunchAgents/com.user.cfst.update.plist
 launchctl list | grep cfst
 ```
 
-### 5. 安装定时任务（Linux）
-
-```bash
-# 编辑 crontab
-sudo crontab -e
-
-# 添加以下行（每6小时执行一次）
-0 */6 * * * /bin/bash /path/to/auto_update_hosts.sh >> /path/to/update.log 2>&1
-```
-
 ---
 
 ## 📁 文件说明
@@ -148,8 +110,8 @@ sudo crontab -e
 | `ipv6.txt` | Cloudflare IPv6 段数据 |
 | `auto_update_hosts.sh` | 自动测速并更新 hosts |
 | **`smart_monitor.sh`** | ⭐ **智能监控**（推荐）：相对阈值策略，只在必要时更新 |
-| `com.user.cfst.update.plist` | macOS 定时任务配置 |
-| `scheduler.sh` | 混合调度器：每天完整测速 + 每3分钟质量监控 |
+| `scheduler.sh` | 混合调度器（每天完整测速 + 每3分钟监控） |
+| `com.user.cfst.update.plist` | macOS 定时任务配置（备选方案） |
 | `install.sh` | 一键安装配置脚本 |
 | `update.log` | 执行日志 |
 | `smart_monitor.log` | 智能监控日志 |
