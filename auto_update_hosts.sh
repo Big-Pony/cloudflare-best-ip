@@ -28,12 +28,24 @@ TARGET_DOMAINS=(
 )
 
 # =============================================================================
-# 日志函数
+# 日志函数（带日志轮转）
 # =============================================================================
+LOG_MAX_LINES=1000
+
 log() {
     local msg="[$(date '+%Y-%m-%d %H:%M:%S')] $1"
     echo "$msg"
     echo "$msg" >> "$LOG_FILE"
+    
+    # 日志轮转：超过最大行数时保留后50%
+    if [[ -f "$LOG_FILE" ]]; then
+        local line_count
+        line_count=$(wc -l < "$LOG_FILE" 2>/dev/null || echo 0)
+        if [[ "$line_count" -gt "$LOG_MAX_LINES" ]]; then
+            tail -n $((LOG_MAX_LINES / 2)) "$LOG_FILE" > "${LOG_FILE}.tmp" && \
+            mv "${LOG_FILE}.tmp" "$LOG_FILE"
+        fi
+    fi
 }
 
 # =============================================================================
