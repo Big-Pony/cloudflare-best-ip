@@ -4,12 +4,27 @@
 
 ## 📋 功能特点
 
-- ✅ **自动测速**：快速筛选延迟最低的 Cloudflare IP
-- ✅ **自动更新**：自动替换 hosts 文件中的旧 IP
-- ✅ **定时执行**：支持每6小时自动执行（可自定义）
-- ✅ **备份机制**：每次修改前自动备份 hosts 文件
+- ✅ **智能监控**：每3分钟检测IP质量，**只在必要时更新**（延迟翻倍才触发）
+- ✅ **自适应阈值**：自动适应不同网络环境（无论基础延迟是50ms还是300ms）
+- ✅ **质量保护**：延迟<300ms绝不折腾，避免频繁更新
+- ✅ **快速测速**：仅测延迟，23秒完成（原方案需10-20分钟）
+- ✅ **自动备份**：每次修改前自动备份 hosts 文件
 - ✅ **DNS刷新**：更新后自动刷新系统 DNS 缓存
-- ✅ **快速模式**：仅测延迟，23秒完成（原方案需10-20分钟）
+
+### 🧠 智能监控策略
+
+传统的定时更新（如每6小时）不管IP好坏都会测速更新，效率低。
+
+本方案采用**相对阈值策略**：
+1. 每3分钟检测当前IP延迟
+2. **延迟 < 300ms** → 不更新（基础质量保障）
+3. **延迟 > 历史最优 × 2** → 异常计数+1（质量恶化检测）
+4. **连续3次异常** → 触发完整测速更新（避免偶发波动）
+
+**优势**：
+- 自适应不同网络环境（家用宽带/4G/国际线路）
+- IP稳定时几乎零开销
+- IP恶化时秒级响应
 
 ---
 
@@ -60,10 +75,39 @@ TARGET_DOMAINS=(
 <string>/Users/yourname/tools/cfst/update.log</string>
 ```
 
-### 3. 手动测试运行
+### 3. 选择运行模式
+
+#### 模式A：智能监控（推荐）
+
+智能判断是否需要更新，IP稳定时不折腾，IP恶化时秒级响应。
 
 ```bash
+# 启动监控（后台运行，每3分钟检测一次）
+./smart_monitor.sh start
+
+# 查看状态
+./smart_monitor.sh status
+
+# 查看统计
+./smart_monitor.sh stats
+
+# 查看日志
+tail -f smart_monitor.log
+
+# 停止监控
+./smart_monitor.sh stop
+```
+
+#### 模式B：定时执行（传统方式）
+
+固定时间间隔执行测速更新。
+
+```bash
+# 手动执行
 sudo ./auto_update_hosts.sh
+
+# 或安装定时任务（每6小时）
+./install.sh
 ```
 
 ### 4. 安装定时任务（macOS）
@@ -102,9 +146,13 @@ sudo crontab -e
 | `cfst` | CloudflareSpeedTest 主程序 |
 | `ip.txt` | Cloudflare IPv4 段数据 |
 | `ipv6.txt` | Cloudflare IPv6 段数据 |
-| `auto_update_hosts.sh` | **核心脚本**：自动测速并更新 hosts |
+| `auto_update_hosts.sh` | 自动测速并更新 hosts |
+| **`smart_monitor.sh`** | ⭐ **智能监控**（推荐）：相对阈值策略，只在必要时更新 |
 | `com.user.cfst.update.plist` | macOS 定时任务配置 |
+| `scheduler.sh` | 混合调度器：每天完整测速 + 每3分钟质量监控 |
+| `install.sh` | 一键安装配置脚本 |
 | `update.log` | 执行日志 |
+| `smart_monitor.log` | 智能监控日志 |
 | `hosts_backup/` | hosts 文件备份目录 |
 
 ---
