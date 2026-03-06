@@ -22,7 +22,7 @@ CFST_ARGS="-dd -n 500 -t 2 -tl 200 -o ${RESULT_FILE}"
 
 # 目标域名列表（⚠️ 修改为你需要加速的域名）
 TARGET_DOMAINS=(
-    "your-domain.com"
+    "backup.mypayau.com"
     # "www.your-domain.com"
     # "api.your-domain.com"
 )
@@ -62,8 +62,8 @@ init_check() {
     # 创建备份目录
     mkdir -p "$BACKUP_DIR"
     
-    # 检查目标域名是否已配置
-    if [[ ${#TARGET_DOMAINS[@]} -eq 0 ]] || [[ "${TARGET_DOMAINS[0]}" == "your-domain.com" ]]; then
+    # 检查目标域名是否已配置（不是示例域名）
+    if [[ ${#TARGET_DOMAINS[@]} -eq 0 ]] || [[ "${TARGET_DOMAINS[0]}" == "your-domain.com" ]] || [[ "${TARGET_DOMAINS[0]}" == "example.com" ]]; then
         log "警告: 请先在脚本中配置 TARGET_DOMAINS 目标域名"
         exit 1
     fi
