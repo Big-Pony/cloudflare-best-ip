@@ -2,6 +2,8 @@
 *.log
 update*.log
 *.error.log
+smart_monitor.log
+scheduler.log
 
 # 测速结果
 *.csv
@@ -9,8 +11,12 @@ result*.txt
 result*.csv
 quick_result.csv
 
-# 缓存文件
+# 缓存文件和状态
 .nowip_cache
+.monitor_state
+.latency_history
+.smart_monitor_pid
+.scheduler_pid
 .DS_Store
 
 # 备份目录内容（保留目录，不提交备份文件）
