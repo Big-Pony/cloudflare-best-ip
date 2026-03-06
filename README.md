@@ -33,13 +33,31 @@ tar -zxf CloudflareST_linux_amd64.tar.gz
 
 ### 2. 配置文件
 
-编辑 `auto_update_hosts.sh`，修改你的域名：
+#### 2.1 修改域名
+
+编辑 `auto_update_hosts.sh`，修改 `TARGET_DOMAINS`：
 
 ```bash
-# 目标域名列表
+# 目标域名列表（修改为你需要加速的域名）
 TARGET_DOMAINS=(
     "your-domain.com"   # ← 改成你的域名
+    # "www.your-domain.com"
 )
+```
+
+#### 2.2 修改路径（macOS 定时任务）
+
+编辑 `com.user.cfst.update.plist`，将 `/path/to/cfst` 替换为你的实际路径：
+
+```xml
+<!-- 修改为你的实际路径 -->
+<string>/Users/yourname/tools/cfst/auto_update_hosts.sh</string>
+
+<!-- 修改为你的实际目录 -->
+<string>/Users/yourname/tools/cfst</string>
+
+<!-- 日志路径 -->
+<string>/Users/yourname/tools/cfst/update.log</string>
 ```
 
 ### 3. 手动测试运行
@@ -51,13 +69,17 @@ sudo ./auto_update_hosts.sh
 ### 4. 安装定时任务（macOS）
 
 ```bash
-# 复制配置文件
+# 1. 先编辑 plist 文件，修改路径
+# 将 /path/to/cfst 替换为你的实际路径
+nano com.user.cfst.update.plist
+
+# 2. 复制配置文件
 cp com.user.cfst.update.plist ~/Library/LaunchAgents/
 
-# 加载定时任务
+# 3. 加载定时任务
 launchctl load ~/Library/LaunchAgents/com.user.cfst.update.plist
 
-# 验证
+# 4. 验证
 launchctl list | grep cfst
 ```
 

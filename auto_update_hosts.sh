@@ -20,9 +20,11 @@ BACKUP_DIR="${CFST_DIR}/hosts_backup"
 CFST_ARGS="-dd -n 500 -t 2 -tl 200 -o ${RESULT_FILE}"
 # 完整模式(较慢): -tl 200 -dn 10 -dt 10 -o ${RESULT_FILE}
 
-# 目标域名列表（修改为你需要加速的域名）
+# 目标域名列表（⚠️ 修改为你需要加速的域名）
 TARGET_DOMAINS=(
-    "backup.mypayau.com"
+    "your-domain.com"
+    # "www.your-domain.com"
+    # "api.your-domain.com"
 )
 
 # =============================================================================
