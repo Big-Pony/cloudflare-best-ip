@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 任务标识 -->
+    <key>Label</key>
+    <string>com.user.cfst.update</string>
+    
+    <!-- 执行程序 -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/myt/Documents/github/cfst_darwin_arm64/auto_update_hosts.sh</string>
+    </array>
+    
+    <!-- 工作目录 -->
+    <key>WorkingDirectory</key>
+    <string>/Users/myt/Documents/github/cfst_darwin_arm64</string>
+    
+    <!-- 每 6 小时执行一次 (6*60*60=21600秒) -->
+    <key>StartInterval</key>
+    <integer>21600</integer>
+    
+    <!-- 或者设置为每天固定时间点执行（与 StartInterval 二选一） -->
+    <!-- <key>StartCalendarInterval</key> -->
+    <!-- <dict> -->
+    <!--     <key>Hour</key> -->
+    <!--     <integer>3</integer> -->
+    <!--     <key>Minute</key> -->
+    <!--     <integer>0</integer> -->
+    <!-- </dict> -->
+    
+    <!-- 标准输出日志 -->
+    <key>StandardOutPath</key>
+    <string>/Users/myt/Documents/github/cfst_darwin_arm64/update.log</string>
+    
+    <!-- 错误日志 -->
+    <key>StandardErrorPath</key>
+    <string>/Users/myt/Documents/github/cfst_darwin_arm64/update.error.log</string>
+    
+    <!-- 如果任务失败，不重试 -->
+    <key>KeepAlive</key>
+    <false/>
+    
+    <!-- 网络可达时执行 -->
+    <key>NetworkState</key>
+    <true/>
+</dict>
+</plist>
